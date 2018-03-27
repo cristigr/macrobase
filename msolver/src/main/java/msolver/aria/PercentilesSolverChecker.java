@@ -31,12 +31,12 @@ public class PercentilesSolverChecker {
         solveNoKusto(krakenClient.getCubeId(), krakenClient.getMeasureName(), flatListOfDataRows);
     }
 
-    public void comparePercentiles() throws Exception {
+    public void comparePercentiles(boolean onStarRequest) throws Exception {
         String krakenResponse = krakenClient.getData();
         Map<String, List<RtaDataRow>> krakenDataRows = new KrakenResponseParser().ParseCombinationsResponse(krakenResponse);
 
         String kustoResponse = kustoClient.getData();
-        Map<String, List<KustoDataRow>> kustoDataRows = new KustoResponseParser().ParseCombinationsResponse(kustoResponse);
+        Map<String, List<KustoDataRow>> kustoDataRows = new KustoResponseParser().ParseCombinationsResponse(kustoResponse, onStarRequest);
 
         AriaDataProvider ariaDataProvider = new AriaDataProvider(krakenDataRows, kustoDataRows);
         List<AriaDataRow> flatListOfAriaDataRows = ariaDataProvider.getDataRows();
@@ -107,10 +107,10 @@ public class PercentilesSolverChecker {
         System.out.printf("%-25s%15s%-25s%40s%15s%-30s%40s\n",
                 String.format("Percentile %s", percentileType),
                 "SolverToKusto:\t",
-                String.format("MAX relative error: %15f", maxSolverToKustoError * 100),
+                String.format("MAX relative error: %15f%%", maxSolverToKustoError * 100),
                 String.format("AVG relative error: %15f%%", avgSolverToKusto * 100),
                 "RtaToKusto:\t",
-                String.format("MAX relative error: %15f", maxRtaToKustoError * 100),
+                String.format("MAX relative error: %15f%%", maxRtaToKustoError * 100),
                 String.format("AVG relative error: %15f%%", avgRtaToKustoRrror * 100));
     }
 
@@ -118,11 +118,11 @@ public class PercentilesSolverChecker {
         System.out.printf("%-25s%15s%-25s%40s%15s%-30s%40s\n",
                 String.format("Percentile %s", percentileType),
                 "SolverToKusto:\t",
-                String.format("MAX relative error: %15f", maxAbsoluteSolverError),
-                String.format("AVG relative error: %15f%%", avgAbsoluteSolverError),
+                String.format("MAX absolute error: %15f", maxAbsoluteSolverError),
+                String.format("AVG absolute error: %15f", avgAbsoluteSolverError),
                 "RtaToKusto:\t",
-                String.format("MAX relative error: %15f", maxAbsoluteRtaError),
-                String.format("AVG relative error: %15f%%", avgAbsoluteRTtaError));
+                String.format("MAX absolute error: %15f", maxAbsoluteRtaError),
+                String.format("AVG absolute error: %15f", avgAbsoluteRTtaError));
     }
 
 }

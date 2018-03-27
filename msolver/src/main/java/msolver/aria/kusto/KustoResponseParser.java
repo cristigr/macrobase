@@ -6,7 +6,7 @@ public class KustoResponseParser {
 
     private static String StarCombinationId = "";
 
-    public Map<String, List<KustoDataRow>> ParseCombinationsResponse(String response) {
+    public Map<String, List<KustoDataRow>> ParseCombinationsResponse(String response, boolean onStarRequest) {
         Map<String, List<KustoDataRow>> combinationsToDataRows = new HashMap<>();
         String[] rows = response.split("\n");
 
@@ -22,9 +22,8 @@ public class KustoResponseParser {
             long count = Double.valueOf(columns[8]).longValue();
 
             String combinationId = StarCombinationId;
-            if (columns.length > 9) {
-                String[] combinationColumns = Arrays.copyOfRange(columns, 9, columns.length);
-                combinationId = String.join(",", combinationColumns).replaceAll("\\s", "");
+            if (columns.length > 9 && !onStarRequest) {
+                combinationId = columns[9];
             }
 
             combinationsToDataRows.putIfAbsent(combinationId, new ArrayList<>());
